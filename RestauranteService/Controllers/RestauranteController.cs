@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RestauranteService.Data;
 using RestauranteService.Dtos;
 using RestauranteService.Models;
+using RestauranteService.Services;
 
 namespace RestauranteService.Controllers;
 
@@ -12,13 +13,16 @@ public class RestauranteController : ControllerBase
 {
     private readonly IRestauranteRepository _repository;
     private readonly IMapper _mapper;
+    private readonly IItemServiceHttpClient _itemService;
 
     public RestauranteController(
         IRestauranteRepository repository,
-        IMapper mapper)
+        IMapper mapper,
+        IItemServiceHttpClient itemService)
     {
         _repository = repository;
         _mapper = mapper;
+        _itemService = itemService;
     }
 
     [HttpGet]
@@ -50,6 +54,7 @@ public class RestauranteController : ControllerBase
         _repository.SaveChanges();
 
         var restauranteReadDto = _mapper.Map<RestauranteReadDto>(restaurante);
+        _itemService.EnviaRestauranteParaItemService(restauranteReadDto);
 
         return CreatedAtRoute(nameof(GetRestauranteById), new { restauranteReadDto.Id }, restauranteReadDto);
     }
