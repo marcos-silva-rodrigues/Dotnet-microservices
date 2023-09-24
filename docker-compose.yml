@@ -3,6 +3,8 @@ services:
     build: ./ItemService
     ports:
       - "8081:80"
+    depends_on:
+      - rabbitmq-service
     networks:
       - microservices
 
@@ -12,6 +14,7 @@ services:
       - "8000:80"
     depends_on:
       - mysql
+      - rabbitmq-service
     networks:
       - microservices
 
@@ -19,10 +22,21 @@ services:
     image: mysql
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: "root"
-      MYSQL_DATABASE: "restaurantedb"
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: restaurantedb
     ports:
       - "3306:3306"
+    networks:
+      - microservices
+
+  rabbitmq-service:
+    hostname: rabbitmq-service
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+    # environment:
+    #   RABBITMQ_DEFAULT_USER: user
+    #   RABBITMQ_DEFAULT_PASS: password
     networks:
       - microservices
 

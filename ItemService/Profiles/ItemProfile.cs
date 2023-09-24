@@ -11,6 +11,8 @@ namespace ItemService.Profiles
             CreateMap<Restaurante, RestauranteReadDto>();
             CreateMap<ItemCreateDto, Item>();
             CreateMap<Item, ItemCreateDto>();
+            CreateMap<RestauranteReadDto, Restaurante>()
+                .ForMember(dest => dest.IdExterno, opt => opt.MapFrom(src => src.Id));
         }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RestauranteService.Data;
 using RestauranteService.Dtos;
 using RestauranteService.Models;
+using RestauranteService.RabbitMqClient;
 using RestauranteService.Services;
 
 namespace RestauranteService.Controllers;
@@ -14,15 +15,18 @@ public class RestauranteController : ControllerBase
     private readonly IRestauranteRepository _repository;
     private readonly IMapper _mapper;
     private readonly IItemServiceHttpClient _itemService;
+    private readonly IRabbitMqClient _rabbitMqClient;
 
     public RestauranteController(
         IRestauranteRepository repository,
         IMapper mapper,
-        IItemServiceHttpClient itemService)
+        IItemServiceHttpClient itemService,
+        IRabbitMqClient rabbitMqClient)
     {
         _repository = repository;
         _mapper = mapper;
         _itemService = itemService;
+        _rabbitMqClient = rabbitMqClient;
     }
 
     [HttpGet]
@@ -54,7 +58,8 @@ public class RestauranteController : ControllerBase
         _repository.SaveChanges();
 
         var restauranteReadDto = _mapper.Map<RestauranteReadDto>(restaurante);
-        _itemService.EnviaRestauranteParaItemService(restauranteReadDto);
+        //_itemService.EnviaRestauranteParaItemService(restauranteReadDto);
+        _rabbitMqClient.PublicaRestaurante(restauranteReadDto);
 
         return CreatedAtRoute(nameof(GetRestauranteById), new { restauranteReadDto.Id }, restauranteReadDto);
     }
