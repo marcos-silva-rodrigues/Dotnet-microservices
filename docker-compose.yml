@@ -1,0 +1,30 @@
+services:
+  item-service:
+    build: ./ItemService
+    ports:
+      - "8081:80"
+    networks:
+      - microservices
+
+  restaurante-service:
+    build: ./RestauranteService
+    ports:
+      - "8000:80"
+    depends_on:
+      - mysql
+    networks:
+      - microservices
+
+  mysql:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "restaurantedb"
+    ports:
+      - "3306:3306"
+    networks:
+      - microservices
+
+networks:
+  microservices: {}

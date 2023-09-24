@@ -22,4 +22,20 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Dockerfile">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Dockerfile.txt</LastGenOutput>
+    </None>
+    <None Update="Dockerfile.txt">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Dockerfile</DependentUpon>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
 </Project>
